@@ -4,11 +4,11 @@
 
 
 // Wifi security
-const char* ssid = "IOT";
-const char* password = "IOT12345";
+const char* ssid = "MotoEPC";
+const char* password = "57142857";
 
 // MQTT Broker IP address
-const char* mqtt_server = "192.168.50.167";
+const char* mqtt_server = "192.168.37.36";
 // const char* mqtt_server = "10.25.18.8";
 
 WiFiClient espClient;
