@@ -12,8 +12,8 @@ print("Connecting to MQTT broker")
 client = mqtt.Client()
 
 client.on_connect = on_connect
-client.on_message = on_message
 
 client.connect("localhost", 1883, 60)
 
-client.publish("esp32/Mic", "Hello")
+for i in range(3500):
+    client.publish("esp32/Mic", i.to_bytes(2, byteorder='little'))

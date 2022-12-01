@@ -10,14 +10,6 @@ ax = fig.add_subplot(1, 1, 1)
 
 start = time.time()
 
-from matplotlib import pyplot as plt
-import matplotlib.animation as animation
-import time
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
-
-start = time.time()
-count = 0
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -33,7 +25,7 @@ count = 0
 def on_message(client, userdata, msg):
     payload = msg.payload
     count += 1
-    if(count > 3000):
+    if (count > 3000):
         print(time.time()-start)
 
     """int_val = int.from_bytes(payload, byteorder='little')
