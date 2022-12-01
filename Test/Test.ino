@@ -5,11 +5,11 @@
 #define MIC A0
 
 // Wifi security
-const char *ssid = "LapEsteban";
-const char *password = "57142857";
+const char *ssid = "Hilda";
+const char *password = "hildab04";
 
 // MQTT Broker IP address
-const char *mqtt_server = "192.168.137.234";
+const char *mqtt_server = "172.20.10.2";
 // const char* mqtt_server = "10.25.18.8";
 
 WiFiClient espClient;
@@ -23,6 +23,7 @@ unsigned int counter = 0;
 const int ledPin = 2;
 
 uint16_t adc;
+
 
 void setup()
 {
@@ -91,4 +92,10 @@ void loop()
     client.endPublish();
 
     counter++;
+
+    if(millis()-start>1000){
+      Serial.println(counter);
+      counter = 0;
+      start = millis();
+    }
 }
