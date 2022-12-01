@@ -1,8 +1,15 @@
 # subscribe to mqtt topic and save to wav file
 
 import paho.mqtt.client as mqtt
-import wave
 
+from matplotlib import pyplot as plt
+import matplotlib.animation as animation
+import time
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+
+start = time.time()
+count = 0
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -11,23 +18,27 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("esp32/Mic")
 
 
-payload = []
+array = []
+
 
 
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
-    wf = wave.open('test.wav', 'wb')
-    wf.setnchannels(1)
-    wf.setsampwidth(2)
-    wf.setframerate(16000)
+    global start
+    global count
+    payload = msg.payload
+    count += 1
+    if(count > 3000):
+        print(time.time()-start)
+        count = 0
+        start = time.time()
 
-    payload.append(msg.payload)
-
-    if len(payload) > 16000*5:
-        wf.writeframes(b''.join(payload))
-        wf.close()
-        payload.clear()
-        print("save to wav file")
+    """int_val = int.from_bytes(payload, byteorder='little')
+    array.append(int_val)
+    if len(array) > 3500:
+        array.pop(0)
+    print(int_val)
+    ax.clear()
+    ax.plot(array)"""
 
 
 client = mqtt.Client()
@@ -36,5 +47,6 @@ client.on_connect = on_connect
 client.on_message = on_message
 
 client.connect("localhost", 1883, 60)
+
 
 client.loop_forever()
