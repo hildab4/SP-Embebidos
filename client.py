@@ -16,10 +16,7 @@ x = np.arange(0, SAMPLES, 1)
 y = [0]*SAMPLES
 
 fig = plt.figure()
-ax = fig.add_subplot(111)
-line1, = ax.plot(x, y, 'b-')
-
-count = 0
+ax = fig.add_subplot(1, 1, 1)
 
 
 def on_connect(client, userdata, flags, rc):
@@ -29,12 +26,17 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("esp32/Mic")
 
 
+def animate(i):
+    ax = fig.add_subplot(1, 1, 1)
+    ax.clear()
+    ax.plot(y)
+
+
 def on_message(client, userdata, msg):
     payload = msg.payload
     int_val = int.from_bytes(payload, byteorder='little')
-    lin1.set_ydata(int_val)
-    fig.canvas.draw()
-    fig.canvas.flush_events()
+    y.pop(0)
+    y.append(int_val)
 
 
 print("Connecting to MQTT broker")
@@ -46,4 +48,4 @@ client.on_message = on_message
 
 client.connect("localhost", 1883, 60)
 
-client.loop_forever()
+ani = animation.FuncAnimation(fig, animate, interval=50)
