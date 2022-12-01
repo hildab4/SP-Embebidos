@@ -9,6 +9,10 @@ import time
 start = time.time()
 count = 0
 
+fig = plt.gcf()
+fig.show()
+fig.canvas.draw()
+
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -35,11 +39,9 @@ def on_message(client, userdata, msg):
 
     if index >= 3500:
         index = 0
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1)
-        ax.clear()
-        ax.plot(array)
-        plt.show()
+        plt.plot(array)
+        plt.pause(0.01)
+        fig.canvas.draw()
 
 
 print("Connecting to MQTT broker")
