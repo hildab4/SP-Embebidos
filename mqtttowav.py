@@ -15,19 +15,8 @@ payload = []
 
 
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
-    wf = wave.open('test.wav', 'wb')
-    wf.setnchannels(1)
-    wf.setsampwidth(2)
-    wf.setframerate(16000)
-
-    payload.append(msg.payload)
-
-    if len(payload) > 16000*5:
-        wf.writeframes(b''.join(payload))
-        wf.close()
-        payload.clear()
-        print("save to wav file")
+    payload = msg.payload
+    print(payload)
 
 
 client = mqtt.Client()
