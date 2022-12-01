@@ -23,13 +23,15 @@ index = 0
 
 
 def on_message(client, userdata, msg):
-
+    global index
     payload = msg.payload
 
     int_val = int.from_bytes(payload, byteorder='little')
     array.append(int_val)
     array[index] = int_val
     index += 1
+
+    print(int_val)
 
     if index >= 3500:
         index = 0

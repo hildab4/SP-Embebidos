@@ -15,5 +15,7 @@ client.on_connect = on_connect
 
 client.connect("localhost", 1883, 60)
 
-for i in range(3500):
-    client.publish("esp32/Mic", i.to_bytes(2, byteorder='little'))
+# Publish sine wave of amplitude 1000 and period 100
+for i in range(0, 3500):
+    value = int(1000 * math.sin(i * 2 * math.pi / 100))
+    client.publish("esp32/Mic", value.to_bytes(2, byteorder='little'))
