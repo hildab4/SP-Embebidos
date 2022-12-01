@@ -2,16 +2,19 @@
 
 import paho.mqtt.client as mqtt
 
-from matplotlib import pyplot as plt
-import matplotlib.animation as animation
-import time
+import matplotlib.pyplot as plt
+# import DataPlot and RealtimePlot from the file plot_data.py
+from plot_data import DataPlot, RealtimePlot
 
 start = time.time()
 count = 0
 
-fig = plt.gcf()
-fig.show()
-fig.canvas.draw()
+fig, axes = plt.subplots()
+
+data = DataPlot()
+dataPlotting = RealtimePlot(axes)
+
+count = 0
 
 
 def on_connect(client, userdata, flags, rc):
@@ -31,16 +34,11 @@ def on_message(client, userdata, msg):
     payload = msg.payload
 
     int_val = int.from_bytes(payload, byteorder='little')
-    array.append(int_val)
-    array[index] = int_val
-    index += 1
-
-    if index >= 3500:
-        print("Plotting")
-        index = 0
-        plt.plot(array)
-        plt.pause(0.01)
-        fig.canvas.draw()
+    global count
+    count += 1
+    data.add(count, int_val)
+    dataPlotting.plot(data)
+    plt.pause(0.001)
 
 
 print("Connecting to MQTT broker")
