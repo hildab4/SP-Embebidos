@@ -5,6 +5,7 @@ import paho.mqtt.client as mqtt
 import matplotlib.pyplot as plt
 # import DataPlot and RealtimePlot from the file plot_data.py
 from plot_data import DataPlot, RealtimePlot
+import time
 
 start = time.time()
 count = 0

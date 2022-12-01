@@ -16,18 +16,14 @@ class DataPlot:
     def __init__(self, max_entries=20):
         self.axis_x = deque(maxlen=max_entries)
         self.axis_y = deque(maxlen=max_entries)
-        self.axis_y2 = deque(maxlen=max_entries)
 
         self.max_entries = max_entries
 
         self.buf1 = deque(maxlen=5)
-        self.buf2 = deque(maxlen=5)
 
-    def add(self, x, y, y2):
-
+    def add(self, x, y):
         self.axis_x.append(x)
         self.axis_y.append(y)
-        self.axis_y2.append(y2)
 
 
 class RealtimePlot:
@@ -36,15 +32,12 @@ class RealtimePlot:
         self.axes = axes
 
         self.lineplot, = axes.plot([], [], "ro-")
-        self.lineplot2, = axes.plot([], [], "go-")
 
     def plot(self, dataPlot):
         self.lineplot.set_data(dataPlot.axis_x, dataPlot.axis_y)
-        self.lineplot2.set_data(dataPlot.axis_x, dataPlot.axis_y2)
-
         self.axes.set_xlim(min(dataPlot.axis_x), max(dataPlot.axis_x))
-        ymin = min([min(dataPlot.axis_y), min(dataPlot.axis_y2)])-10
-        ymax = max([max(dataPlot.axis_y), max(dataPlot.axis_y2)])+10
+        ymin = min(dataPlot.axis_y)-10
+        ymax = max(dataPlot.axis_y)+10
         self.axes.set_ylim(ymin, ymax)
         self.axes.relim()
 
