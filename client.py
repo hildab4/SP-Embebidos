@@ -35,9 +35,8 @@ def on_message(client, userdata, msg):
     array[index] = int_val
     index += 1
 
-    print(int_val)
-
     if index >= 3500:
+        print("Plotting")
         index = 0
         plt.plot(array)
         plt.pause(0.01)
