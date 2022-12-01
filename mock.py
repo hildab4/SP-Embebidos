@@ -15,7 +15,7 @@ client.on_connect = on_connect
 
 client.connect("localhost", 1883, 60)
 
-# Publish sine wave of amplitude 1000 and period 100
+# Publish sine wave of peak to peak amplitude of 1000, center at 500 and length of 3500 samples
 for i in range(0, 3500):
-    value = int(1000 * math.sin(i * 2 * math.pi / 100))
-    client.publish("esp32/Mic", value.to_bytes(2, byteorder='little'))
+    client.publish(
+        "esp32/Mic", bytearray([int(1000 * math.sin(i * 2 * math.pi / 3500) + 500)]))
