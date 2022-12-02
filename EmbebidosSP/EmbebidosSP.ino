@@ -3,7 +3,7 @@
 #include <PubSubClient.h>
 
 #define MIC A0
-#define SAMPLES 12500
+#define SAMPLES 10000
 
 // Wifi security
 const char *ssid = "MotoEPC";
@@ -92,20 +92,19 @@ void loop()
 
   adc = analogRead(MIC);
 
-  payload |= (adc & 0x3FF) << position * 10;
+  // payload = payload << 10 | adc;
 
   if (counter == SAMPLES)
   {
-    Serial.print("Reading: ");
-    Serial.println((millis() - start) / 1000);
+
     start = millis();
     for (int i = 0; i < SAMPLES; i++)
     {
-      client.publish("esp32/Mic", "test", 4);
+      client.beginPublish("esp32/Mic", 2, false);
+      client.write((uint8_t *)&adc, 2);
+      client.endPublish();
     }
 
-    Serial.print("Publishing: ");
-    Serial.println((millis() - start) / 1000);
     start = millis();
 
     counter = 0;
@@ -113,9 +112,10 @@ void loop()
 
   if (position == 2)
   {
-    messages[counter++] = payload;
+    messages[counter] = payload;
     payload = 0;
     position = 0;
+    counter++;
   }
   else
   {
