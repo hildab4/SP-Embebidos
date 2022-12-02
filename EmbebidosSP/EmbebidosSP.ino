@@ -3,32 +3,39 @@
 #include <PubSubClient.h>
 
 #define MIC A0
+#define SAMPLES 12500
 
 // Wifi security
 const char *ssid = "MotoEPC";
 const char *password = "57142857";
 
 // MQTT Broker IP address
-const char *mqtt_server = "192.168.37.36";
+const char *mqtt_server = "192.168.135.36";
 // const char* mqtt_server = "10.25.18.8";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-long lastMsg = 0;
-char msg[50];
+long start = 0;
 
-float Dato_Enviar = 0;
+unsigned int counter = 0;
 
 // LED Pin
 const int ledPin = 2;
+
+uint16_t adc;
+uint32_t payload;
+
+uint8_t position = 0;
+uint32_t messages[SAMPLES];
 
 void setup()
 {
   Serial.begin(9600);
   Serial.println("Starting");
-  /*setup_wifi();
-  client.setServer(mqtt_server, 1883);*/
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  start = millis();
 }
 
 void setup_wifi()
@@ -77,18 +84,41 @@ void reconnect()
 
 void loop()
 {
-  /*if (!client.connected())
+  if (!client.connected())
   {
     reconnect();
   }
-  client.loop();*/
+  client.loop();
 
-  float adc = (analogRead(MIC) - 300.0);
+  adc = analogRead(MIC);
 
-  char tempString[8];
-  dtostrf(adc, 1, 2, tempString);
+  payload |= (adc & 0x3FF) << position * 10;
 
-  Serial.println(tempString);
+  if (counter == SAMPLES)
+  {
+    Serial.print("Reading: ");
+    Serial.println((millis() - start) / 1000);
+    start = millis();
+    for (int i = 0; i < SAMPLES; i++)
+    {
+      client.publish("esp32/Mic", "test", 4);
+    }
 
-  // client.publish("esp32/Mic", tempString);
+    Serial.print("Publishing: ");
+    Serial.println((millis() - start) / 1000);
+    start = millis();
+
+    counter = 0;
+  }
+
+  if (position == 2)
+  {
+    messages[counter++] = payload;
+    payload = 0;
+    position = 0;
+  }
+  else
+  {
+    position++;
+  }
 }

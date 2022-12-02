@@ -5,6 +5,9 @@ import paho.mqtt.client as mqtt
 import matplotlib.pyplot as plt
 import time
 import numpy as np
+from numpy import pi, cos, sin, convolve
+from scipy.fftpack import fft, ifft, fftshift
+from scipy.signal import butter, sosfiltfilt
 
 SAMPLES = 3500
 
@@ -17,6 +20,13 @@ y = [0]*SAMPLES
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
+
+
+def plot_fft(Y, colours=None, markersize=10):
+    f, ax = plots()
+    ax.plot(np.arange(-len(Y)//2, len(Y)//2), fftshift(abs(Y)), 'bo')
+    plt.show()
+    return f, ax
 
 
 def on_connect(client, userdata, flags, rc):
@@ -37,6 +47,8 @@ def on_message(client, userdata, msg):
     int_val = int.from_bytes(payload, byteorder='little')
     y.pop(0)
     y.append(int_val)
+
+    # Scale x domain by a factor of 8
 
 
 print("Connecting to MQTT broker")
